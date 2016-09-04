@@ -1,0 +1,35 @@
+html, body, .App {
+  height: 100%;
+}
+
+.App {
+  font-size: 12px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.dot {
+  width: 100px;
+  text-align: center;
+  margin: 20px auto;
+  cursor: pointer;
+  display: block;
+
+}
+
+audio {
+  display: none;
+}
+
+.paragraph {
+  list-style: none;
+  height: 400px;
+  overflow-y: none;
+}
+
+.paragraph li {
+  padding: 10px 0;
+}
+
+
+
