@@ -17,14 +17,19 @@ html, body, .App {
 
 }
 
+button {
+  border: 0px;
+  background-color: white;
+}
+
 audio {
-  display: none;
+ /* display: none;*/
 }
 
 .paragraph {
   list-style: none;
   height: 400px;
-  overflow-y: none;
+  overflow-y: hidden;
 }
 
 .paragraph li {
