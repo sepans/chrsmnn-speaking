@@ -8,11 +8,7 @@ import AudioFileList from './AudioFileList'
 import SpeakingData from './static/speaking.json'
 import GoonData from './static/goon.json'
 
-//import AudioSrc from './static/speaking.mp3'
-// const speakingSrc = require("file!./static/audio/speaking.mp3");
-// const goonSrc = require("file!./static/audio/goon.mp3");
-
-//const SpeakingData = require("./static/speaking.json");
+import Sidebar from 'react-sidebar';
 
 const GOON = 'GOON', SPEAKING = 'SPEAKING', SPEAKING_PLUS_GOON = 'SPEAKING_PLUS_GOON', GOON_PLUS_SPEAKING = 'GOON_PLUS_SPEAKING'
 
@@ -34,6 +30,7 @@ const initialState ={
   displaydiv: false,
   textPaneOpen: false,
   playMode: GOON,
+  sidebarOpen: false,
   players: [
     {
       paragraph: 0,
@@ -67,28 +64,11 @@ class App extends Component {
 
 
     this.timeIsUp = this.timeIsUp.bind(this)
-    /*
-    this.audioFileList = {
-      'speaking': Array.apply(null, Array(1)).map((d, i) => {
-        const path = `file!./static/audio/speaking_${i}.mp3`
-        console.log('path', path)
-        return require(path)
-      })
-    }
-    */
-
-    //const speaking0 = require('file!./static/audio/speaking_0.mp3')
-/*
-    const speakingAudioImports =  Array.apply(null, Array(1)).map((d, i) => {
-        const path = `file!./static/audio/speaking_${i}.mp3`
-        console.log('path', path)
-        return require(path)
-      })
-*/
-  console.log('audiofilelist', AudioFileList)
 
   }
   componentDidMount() {
+
+    //const mql = window.matchMedia(`(min-width: 600px)`);
 
     this.speaking = SpeakingData.paragraphs.map(d => {
       const parts = d.time_min.split(':')
@@ -118,7 +98,6 @@ class App extends Component {
 
     console.log('setting the state componentDidMount ')
     this.setState({...this.state, speakingLoaded: true});
-
 
   }
 
@@ -176,29 +155,11 @@ class App extends Component {
 
   }
 
-  /*
-  pan(side) {
-    if(side===LEFT) {
-      this.setState({gainLeft: 1, gainRight: 0})
-    }
-    else if(side===RIGHT) {
-      this.setState({gainLeft: 0, gainRight: 1})
-    }
-    if(side===CENTER) {
-      this.setState({gainLeft: 1, gainRight: 1})
-    }
-  }
-  */
+
 
 
   componentWillUpdate(nextProps, nextState) {
-    //check if a player is being changed to playing
 
-    // const { players, playing } = this.state
-    // const nextPlayers = nextState.players
-    // const nextPlaying = nextState.playing
-
-    //TODO player?! or in render
   }
 
 
@@ -243,7 +204,7 @@ class App extends Component {
 
           </button>
         </div>
-        <div style={{width: 50}}>{textBtn}</div>
+        <div style={{width: 50}} onClick={() => this.showText()}>{textBtn}</div>
       </div>
     )
 
@@ -294,10 +255,18 @@ class App extends Component {
 
 
     const text = (
-      <div ref="textscroll" /*onContentSizeChange={(contentWidth, contentHeight)=>{ this.scrollContentSizeChanged(contentWidth, contentHeight)}}*/>
-        <div>{paragraphsUptoNow}</div>
+      <div ref="textscroll" className="text-scroll">
+        {paragraphsUptoNow}
       </div>
     )
+
+    const textscroll = this.refs.textscroll
+    if(textscroll) {
+      setTimeout(() => {
+        textscroll.scrollTop = textscroll.scrollHeight;
+
+      }, 1000)
+    }
 
     const playerEls = this.state.players.map((d, i) => {
       const playerProps = {...d, index: i,
@@ -312,55 +281,38 @@ class App extends Component {
     })
 
     return (
-      <div
-        ref="textdrawer"
-        /*
-        type="displace"
-        content={text}
-        styles={{drawer: { padding: 0}}}
-        tapToClose={true}
-        captureGestures={true}
-        acceptPan={true}
-        negotiatePan={true}
-        acceptDoubleTap={true}
-        panCloseMask={0.3}
-        side='right'
-        tweenHandler={(ratio) => ({
-          main: { opacity:(2-ratio)/2 }
-        })}
-        */
-        >
-          <div className="headphones">
-            <div style={{ color: '#000'}}>for headphones</div>
-          </div>
-          <div className='container'>
-            <div style={{alignSelf: 'stretch',}}>
-              {btns}
-            </div>
-          </div>
-        <button className="delete"  onClick={(e) => this.clearStorage()}>Delete storage</button>
-        {playerEls}
-        <div className="paragraphs">{text}</div>
-      </div>
-    )
-    /*
+        <Sidebar
+          sidebar={text}
+          ref="sidebar"
+          open={this.state.sidebarOpen}
 
-    return (
-      <div className="App">
-        <div className="dot" onClick={() => this.play(ONE_OR_A)}>
-          <span className="hover">Play 1 or A</span>
-        </div>
-        <div className="dot" onClick={() => this.play(A_PLUS_ONE)}>
-          <span className="hover">Play A + 1</span>
-        </div>
-        <div className="dot" onClick={() => this.play(ONE_PLUS_A)}>
-          <span className="hover">Play 1 + A</span>
-        </div>
-        {players}
-        <Paragraph data={this.speaking} currentParagraph={this.state.lastParagraph} display={this.state.players[0].playing} />
-      </div>
+          pullRight="true"
+          touchHandleWidth="20"
+          onSetOpen={(open) => this.setState({...this.state, sidebarOpen: open})}
+          sidebarClassName="text-pane"
+          styles={{overlay: {backgroundColor: 'white'}}}
+          shadow={false}
+          >
+          <div>
+              <div className="headphones">
+                <div style={{ color: '#000'}}>for headphones</div>
+              </div>
+              <div className='container'>
+                <div style={{alignSelf: 'stretch',}}>
+                  {btns}
+                </div>
+              </div>
+            <button className="delete"  onClick={(e) => this.clearStorage()}>Delete storage</button>
+            {playerEls}
+
+
+
+
+
+          </div>
+        </Sidebar>
     )
-    */
+
   }
 
   timeIsUp(i) {
@@ -599,7 +551,8 @@ class App extends Component {
 
   showText() {
     console.log('SHOW TEXT')
-    this.refs.textdrawer.open()
+    this.setState({...this.state, sidebarOpen: !this.state.sidebarOpen})
+
   }
 
   _handleModePlayPressed(mode) {
@@ -635,38 +588,5 @@ class App extends Component {
 }
 
 
-
-/*
-const styles = StyleSheet.create({
-  headphones: {
-    alignItems: 'center',
-    padding: 10,
-
-
-  },
-  or: {
-    paddingTop: 8,
-    paddingBottom: 8,
-    fontWeight: 'normal',
-    fontSize: 14,
-    color: '#000'
-  },
-  normaltext: {
-    fontWeight: 'normal',
-    fontSize: 14,
-    color: '#000'
-  },
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-})
-*/
 
 export default App
