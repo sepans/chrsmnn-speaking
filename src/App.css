@@ -1,5 +1,6 @@
 html, body, .App {
   height: 100%;
+  font-size: 12px;
 }
 
 .App {
@@ -17,13 +18,38 @@ html, body, .App {
 
 }
 
+.or {
+  margin: 10px 0;
+}
+
 button {
   border: 0px;
   background-color: white;
+  outline: none;
 }
 
 audio {
- /* display: none;*/
+  /*display: none;*/
+}
+
+.container {
+  margin-top: 5%;
+  text-align: center;
+flex: 1;
+    flexDirection: 'column';
+    justifyContent: 'center';
+    alignItems: 'center';
+}
+
+.headphones {
+  margin-top: 5%;
+  text-align: center;
+}
+
+.paragraphs {
+  max-width: 400px;
+  overflow-y: scroll;
+  margin: 0 auto;
 }
 
 .paragraph {
@@ -34,6 +60,12 @@ audio {
 
 .paragraph li {
   padding: 10px 0;
+}
+
+.delete {
+  position: absolute;
+  bottom: 10px;
+
 }
 
 
